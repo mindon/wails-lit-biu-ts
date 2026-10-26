@@ -1,0 +1,15 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "biu --source-map --serve ${WAILS_VITE_PORT-9245}",
+    "build:dev": "biu",
+    "build": "biu",
+    "preview": "biu --serve ${WAILS_VITE_PORT-9245}"
+  },
+  "dependencies": {
+    "@wailsio/runtime": "latest"
+  }
+}

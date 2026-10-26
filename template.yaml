@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://v3.wails.io/schemas/template.v3.json
+name: "Lit + biu (TypeScript)"
+shortname: lit
+author: Mindon Feng
+description: "Lit + TypeScript + biu"
+helpurl: https://wails.io
+version: v0.0.1
+wailsVersion: 3
+typescript: true
