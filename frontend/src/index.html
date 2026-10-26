@@ -4,11 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wails + biu</title>
+    <script type="importmap">{
+          "imports": {
+            "lit": "https://cdn.jsdelivr.net/npm/lit@3.3.3/+esm",
+            "@lit/": "https://cdn.jsdelivr.net/npm/@lit/",
+            "lit/": "https://cdn.jsdelivr.net/npm/lit@3.3.3/"
+          }
+        }</script>
     <link rel="stylesheet" href="styles.scss" />
 
   </head>
   <body>
-    <wails-app></wails-app>
+    <div class="container">
+        <p>
+            <a href="https://mindon.dev/" target="_blank"><img src="./0xMOz.svg" width="240" height="240" /></a>
+        </p>
+        <wails-app></wails-app>
+    </div>
     <script type="module" src="./wails-app.ts"></script>
   </body>
 </html>
