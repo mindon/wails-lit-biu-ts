@@ -25,7 +25,7 @@ export class WailsApp extends LitElement {
 
   render() {
     return html`
-      <input .value=${this.name} @input=${(e: Event) => {
+      <input autofocus .value=${this.name} @input=${(e: Event) => {
         this.name = (e.target as HTMLInputElement).value;
     }} />
       <button @click=${this.greet}>Greet</button>

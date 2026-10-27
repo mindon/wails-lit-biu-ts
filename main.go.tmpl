@@ -4,9 +4,11 @@ import (
 	"embed"
 
 	"log"
+	"runtime"
 	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/icons"
 )
 
 // Wails uses Go's `embed` package to embed the frontend files into the binary.
@@ -44,7 +46,8 @@ func main() {
 			Handler: application.AssetFileServerFS(assets),
 		},
 		Mac: application.MacOptions{
-			ApplicationShouldTerminateAfterLastWindowClosed: true,
+			// ApplicationShouldTerminateAfterLastWindowClosed: true,
+			ActivationPolicy: application.ActivationPolicyAccessory,
 		},
 	})
 
@@ -53,11 +56,17 @@ func main() {
 	// 'Mac' options tailor the window when running on macOS.
 	// 'BackgroundColour' is the background colour of the window.
 	// 'URL' is the URL that will be loaded into the webview.
-	app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title: "Window 1",
+	window := app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Title: "∅M〇ᶻ App",
 		// Window sized to the golden ratio (1000 / 618 ≈ 1.618).
-		Width:  1000,
-		Height: 618,
+		Width:       1000,
+		Height:      618,
+		Frameless:   true,
+		AlwaysOnTop: true,
+		Hidden:      true,
+		Windows: application.WindowsWindow{
+			HiddenOnTaskbar: true,
+		},
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,
@@ -76,6 +85,46 @@ func main() {
 			time.Sleep(time.Second)
 		}
 	}()
+
+	systemTray := app.SystemTray.New()
+
+	// Support for template icons on macOS
+	if runtime.GOOS == "darwin" {
+		systemTray.SetTemplateIcon(icons.SystrayMacTemplate)
+	} else {
+		// Support for light/dark mode icons
+		systemTray.SetDarkModeIcon(icons.SystrayDark)
+		systemTray.SetIcon(icons.SystrayLight)
+	}
+
+	systemTray.SetLabel("∅M〇ᶻ")
+
+	trayMenu := app.NewMenu()
+	trayMenu.Add("Show").OnClick(func(ctx *application.Context) {
+		window.Show()
+		window.Focus()
+	})
+	trayMenu.AddSeparator()
+	trayMenu.Add("Quit").OnClick(func(ctx *application.Context) {
+		app.Quit()
+	})
+
+	systemTray.SetMenu(trayMenu)
+
+	// This will center the window to the systray icon with a 5px offset
+	// It will automatically be shown when the systray icon is clicked
+	// and hidden when the window loses focus
+	// systemTray.AttachWindow(window).WindowOffset(5) // with this, menu will no show up
+
+	// with this, menu will no show up
+	// systemTray.OnClick(func() {
+	//     if window.IsVisible() {
+	//         window.Hide()
+	//     } else {
+	//         window.Show()
+	//         window.Focus()
+	//     }
+	// })
 
 	// Run the application. This blocks until the application has been exited.
 	err := app.Run()
