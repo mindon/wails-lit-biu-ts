@@ -1,0 +1,17 @@
+  install:frontend:deps:biu:
+    dir: frontend
+    preconditions:
+      - sh: biu --version
+        msg: "biu not found, check https://mindon.dev/biu/"
+    cmds:
+      - biu
+
+  frontend:run:biu:
+    dir: frontend
+    cmds:
+      - biu
+
+  frontend:dev:biu:
+    dir: frontend
+    cmds:
+      - biu --serve {{.VITE_PORT}}

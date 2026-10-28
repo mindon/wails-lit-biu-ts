@@ -21,6 +21,8 @@ includes:
 tasks:
   build:
     summary: Builds the application
+    deps:
+      - task: biu:check
     cmds:
       - task: "{{.Opn}}.GOOS{{.Cls}}:build"
 
@@ -68,3 +70,49 @@ tasks:
     summary: Builds and runs the Docker image
     cmds:
       - task: common:run:docker
+
+  biu:check:
+    summary: prepare biu from https://mindon.dev/biu/
+    cmds:
+      - task: "{{.Opn}}if eq .GOOS \"windows\"{{.Cls}}windows:biu:check{{.Opn}}else{{.Cls}}unix:biu:check{{.Opn}}end{{.Cls}}"
+
+  unix:biu:check:
+    cmds:
+      - |
+        if ! command -v biu >/dev/null 2>&1; then
+          curl -fsSL https://mindon.dev/biu/install | bash
+        fi
+
+        python - <<'PY'
+        from pathlib import Path
+        target = Path("build/Taskfile.yml")
+        source = Path("build/biu.tasks")
+        text = target.read_text(encoding="utf-8")
+        block = source.read_text(encoding="utf-8")
+        if "tasks:" in text and "install:frontend:deps:biu:" not in text:
+            insert_at = text.index("tasks:")
+            text = text[:insert_at + len("tasks:")] + "\n" + block + "\n" + text[insert_at + len("tasks:"):]
+            target.write_text(text, encoding="utf-8")
+        PY
+        biu --version
+
+  windows:biu:check:
+    cmds:
+      - |
+        where biu >nul 2>nul
+        if errorlevel 1 (
+          powershell -c "irm https://mindon.dev/biu/install.ps1 | iex"
+        )
+
+        $target = "build/Taskfile.yml"
+        $source = "build/biu.tasks"
+
+        $text = Get-Content $target -Raw
+        $block = Get-Content $source -Raw
+
+        if ($text.Contains("tasks:") -and -not $text.Contains("install:frontend:deps:biu:")) {
+          $idx = $text.IndexOf("tasks:")
+          $text = $text.Substring(0, $idx + "tasks:".Length) + "`r`n" + $block + "`r`n" + $text.Substring($idx + "tasks:".Length)
+          Set-Content $target $text
+        }
+        biu --version

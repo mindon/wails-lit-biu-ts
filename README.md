@@ -1,10 +1,17 @@
 # Welcome to Your New Wails3 Project!
 
+<https://wails.io>
+
 Congratulations on generating your Wails3 application! This README will guide you through the next steps to get your project up and running.
 
 ## Getting Started
 
 1. Navigate to your project directory in the terminal.
+
+  check tool [biu](https://mindon.dev/biu/) and its tasks by run following command:
+  ```
+  wails3 task biu:check
+  ```
 
 2. To run your application in development mode, use the following command:
 

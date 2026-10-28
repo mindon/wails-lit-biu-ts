@@ -63,7 +63,7 @@ func main() {
 		Height:      618,
 		Frameless:   true,
 		AlwaysOnTop: true,
-		Hidden:      true,
+		Hidden:      false,
 		Windows: application.WindowsWindow{
 			HiddenOnTaskbar: true,
 		},
@@ -100,9 +100,13 @@ func main() {
 	systemTray.SetLabel("∅M〇ᶻ")
 
 	trayMenu := app.NewMenu()
-	trayMenu.Add("Show").OnClick(func(ctx *application.Context) {
-		window.Show()
-		window.Focus()
+	trayMenu.Add("Show/Hide").OnClick(func(ctx *application.Context) {
+		if window.IsVisible() {
+			window.Hide()
+		} else {
+			window.Show()
+			window.Focus()
+		}
 	})
 	trayMenu.AddSeparator()
 	trayMenu.Add("Quit").OnClick(func(ctx *application.Context) {
